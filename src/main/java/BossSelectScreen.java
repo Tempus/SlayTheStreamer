@@ -259,6 +259,7 @@ public class BossSelectScreen {
             }
             FontHelper.renderFontCentered(sb, FontHelper.panelNameFont, "VOTE NOW: " + twitchVoter.getSecondsRemaining() + "s left.", Settings.WIDTH / 2.0f, 192.0f * Settings.scale, Color.WHITE.cpy());
         }
+        sb.draw(SlayTheStreamer.startScreenImage, Settings.WIDTH / 2.0F, 0);
     }
 
     // Twitch Voting Stuff goes here            

@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.Iterator;
+import java.util.*;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -26,9 +27,11 @@ import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import chronometry.patches.*;
 import chronometry.ConfigPanel;
 import chronometry.BossSelectScreen;
+import chronometry.patches.NoSkipBossRelicPatch;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import de.robojumper.ststwitch.*;
 
 @SpireInitializer
 public class SlayTheStreamer implements PostInitializeSubscriber, StartGameSubscriber, PostDungeonInitializeSubscriber {
@@ -43,7 +46,11 @@ public class SlayTheStreamer implements PostInitializeSubscriber, StartGameSubsc
     public static boolean bossHidden = false;
     public static BossSelectScreen bossSelectScreen;
 
+    public static NoSkipBossRelicPatch noSkip;
     public static Texture startScreenImage;
+
+    public static Map<String, Integer> usedNames = new HashMap();
+    public static Map<String, String> displayNames = new HashMap();
 
     @SuppressWarnings("deprecation")
     public SlayTheStreamer() {
@@ -61,6 +68,7 @@ public class SlayTheStreamer implements PostInitializeSubscriber, StartGameSubsc
 
     public void receivePostInitialize() {
         bossSelectScreen = new BossSelectScreen();
+        noSkip = new NoSkipBossRelicPatch();
         startScreenImage = ImageMaster.loadImage("versusImages/FacesOfEvil.png");
 
         try {
@@ -75,7 +83,20 @@ public class SlayTheStreamer implements PostInitializeSubscriber, StartGameSubsc
         Settings.isTestingNeow = true;
 
         Texture badgeTexture = ImageMaster.loadImage("versusImages/Badge.png");
-        BaseMod.registerModBadge(badgeTexture, MOD_NAME, AUTHOR, DESCRIPTION, new ConfigPanel());   
+        BaseMod.registerModBadge(badgeTexture, MOD_NAME, AUTHOR, DESCRIPTION, new ConfigPanel());  
+
+        // Neow Voting - needs to only happen once!
+        TwitchVoter.registerListener(new TwitchVoteListener() {
+            @Override
+            public void onTwitchAvailable() {
+                StartGamePatch.updateVote();
+            }
+            
+            @Override
+            public void onTwitchUnavailable() {
+                StartGamePatch.updateVote();
+            }
+        });
     }
 
     public void receivePostDungeonInitialize() {

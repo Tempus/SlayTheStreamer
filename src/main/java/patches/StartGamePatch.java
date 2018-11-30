@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.evacipated.cardcrawl.modthespire.lib.SpireReturn;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
+import com.evacipated.cardcrawl.modthespire.lib.ByRef;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.neow.NeowEvent;
 import com.megacrit.cardcrawl.neow.NeowReward;
@@ -19,6 +20,7 @@ import com.megacrit.cardcrawl.unlock.UnlockTracker;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.map.DungeonMap;
+import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import de.robojumper.ststwitch.*;
 
 import com.megacrit.cardcrawl.events.RoomEventDialog;
@@ -26,16 +28,62 @@ import com.megacrit.cardcrawl.events.RoomEventDialog;
 import chronometry.SlayTheStreamer;
 import basemod.ReflectionHacks;
 
+// Attempt 1
+// 10:01:51.513 INFO neow.NeowEvent> 0
+// 10:01:51.514 INFO neow.NeowEvent> BLESSING
+// 10:01:51.514 INFO neow.NeowEvent> COUNTER: 0
+// OUT PRIVMSG #chronometrics :VOTE NOW: #0: Remove a Card from your deck; #1: Obtain 100 Gold; #2: Lose all Gold, Remove 2 Cards; #3: Lose your starting Relic Obtain a random boss Relic
+// 10:01:53.227 INFO audio.MusicMaster> Properly faded out MENU
+// 10:02:04.567 INFO core.CardCrawlGame> PAUSE()
+// OUT PRIVMSG #chronometrics :Voting on Neow's bonus ended... chose Remove a Card from your deck
+// 10:02:31.337 INFO neow.NeowReward> [ERROR]   Neow Reward Drawback: NONE
+// 10:02:41.805 INFO helpers.CardHelper> Obtained Pummel (UNCOMMON). You have 2 now
+// 10:02:41.805 INFO unlock.UnlockTracker> Already seen: Pummel
+
+
+// Attmept 2
+// 10:03:01.210 INFO neow.NeowEvent> 0
+// 10:03:01.211 INFO neow.NeowEvent> BLESSING
+// 10:03:01.211 INFO neow.NeowEvent> COUNTER: 0
+// OUT PRIVMSG #chronometrics :VOTE NOW: #0: Upgrade a Card; #1: Max HP +7; #2: Lose 7 Max HP, Obtain a random rare Relic; #3: Lose your starting Relic Obtain a random boss Relic
+// 10:03:01.228 INFO neow.NeowReward> [ERROR] Missing Neow Reward Drawback: NONE
+
+
+
+
 public class StartGamePatch {
 	public static boolean mayVote = false;
 	public static boolean isVoting = false;
 	public static String[] neowOptions = new String[4];
 	public static int option;
 
+	// Reset Variables
+	// @SpirePatch(clz=NeowEvent.class, method=SpirePatch.CONSTRUCTOR, paramtypez={boolean.class})
+	// public static class ResetVariables { 
+	// 	public static void Prefix(NeowEvent self, @ByRef boolean[] isDone) {
+	// 		StartGamePatch.mayVote = false;
+	// 		StartGamePatch.isVoting = false;
+	// 		StartGamePatch.neowOptions = new String[4];
+	// 		ReflectionHacks.setPrivate(self, NeowEvent.class, "pickCard", false);
+	// 		// isDone[0]= false;
+	// 	}
+	// }
+
+   //  	NeowEvent n = (NeowEvent)AbstractDungeon.getCurrRoom().event;
+   //  	if ((Integer)ReflectionHacks.getPrivate(n, NeowEvent.class, "screenNum") == 99) {
+   //  		StartGamePatch.mayVote = false;
+   //          final TwitchVoter twitchVoter = StartGamePatch.getVoter().get();
+	// twitchVoter.endVoting(true);
+   //          StartGamePatch.isVoting = false;
+	  //       StartGamePatch.chooseCards((NeowEvent)AbstractDungeon.getCurrRoom().event);
+   //          return;
+   //  	}
+
 	// Choose your cards
 	@SpirePatch(clz=NeowEvent.class, method="blessing")
 	public static class SetDeckBlessing { 
 		public static SpireReturn Prefix(NeowEvent self) {
+			// If we aren't voting on Neow, just choose the cards right away, thanks.
 			if (!SlayTheStreamer.config.getBool("VoteOnNeow")) {
 				StartGamePatch.chooseCards(self); 
 				return SpireReturn.Return(null);
@@ -45,22 +93,24 @@ public class StartGamePatch {
 
 		public static void Postfix(NeowEvent self) {
 			if (SlayTheStreamer.config.getBool("VoteOnNeow")) {
-		        TwitchVoter.registerListener(new TwitchVoteListener() {
-		            @Override
-		            public void onTwitchAvailable() {
-		                StartGamePatch.updateVote();
-		            }
-		            
-		            @Override
-		            public void onTwitchUnavailable() {
-		                StartGamePatch.updateVote();
-		            }
-		        });
+				// Starts voting and populates and formats the options for chat message.
 				StartGamePatch.mayVote = true;
 
 				for (int i = 0; i < 4; i++) {
-					StartGamePatch.neowOptions[i] = ((ArrayList<NeowReward>)ReflectionHacks.getPrivate(self, NeowEvent.class, "rewards")).get(i).optionLabel.replace("#g", "").replace("#r", "").replace("[ ", 
-					"").replace(" ]", "");
+					if (i >= 2) {
+						StartGamePatch.neowOptions[i] = ((ArrayList<NeowReward>)ReflectionHacks.getPrivate(self, NeowEvent.class, "rewards")).get(i).optionLabel
+						.replaceFirst(" #g", ", ")
+						.replace("#g", "")
+						.replace("#r", "")
+						.replace("[ ", "")
+						.replace(" ]", "");
+					} else {
+						StartGamePatch.neowOptions[i] = ((ArrayList<NeowReward>)ReflectionHacks.getPrivate(self, NeowEvent.class, "rewards")).get(i).optionLabel
+						.replace("#g", "")
+						.replace("#r", "")
+						.replace("[ ", "")
+						.replace(" ]", "");
+					}
 				}
 				StartGamePatch.updateVote();
 			}
@@ -84,7 +134,6 @@ public class StartGamePatch {
         if (StartGamePatch.getVoter().isPresent()) {
             final TwitchVoter twitchVoter = StartGamePatch.getVoter().get();
             if (StartGamePatch.mayVote && twitchVoter.isVotingConnected() && !StartGamePatch.isVoting) {
-
                 StartGamePatch.isVoting = twitchVoter.initiateSimpleNumberVote(StartGamePatch.neowOptions, StartGamePatch::completeVoting);
             }
             else if (StartGamePatch.isVoting && (!StartGamePatch.mayVote || !twitchVoter.isVotingConnected())) {
@@ -104,9 +153,10 @@ public class StartGamePatch {
             AbstractDungeon.topPanel.twitch.ifPresent(twitchPanel -> twitchPanel.connection.sendMessage("Voting on Neow's bonus ended... chose " + twitchVoter.getOptions()[option].displayName));
         }
 
-        // DO THE THING
+        // Occurs when the vote runs out of time.
 
         // Save the chosen option
+        SlayTheStreamer.log("Voting Ended");
         StartGamePatch.option = option;
 
         // Clear off the visible text
@@ -120,25 +170,29 @@ public class StartGamePatch {
 
         // Construct your deck
         StartGamePatch.chooseCards((NeowEvent)AbstractDungeon.getCurrRoom().event);
-
-        // this settles our options.
-
-        // // Private functions are dumb
-        // try {
-        //     Method m = NeowEvent.class.getDeclaredMethod("dismissBubble", Integer.class);
-        //     m.setAccessible(true);
-        //     m.invoke(AbstractDungeon.getCurrRoom().event, option);
-        // }
-        // catch (Throwable e) {}
     }
 
 	@SpirePatch(clz=NeowEvent.class, method="update")
 	public static class WaitForDeckConstruction { 
 		public static void Prefix(NeowEvent self) {
+			// Resets the voting variables upon completion of the room
+			if (AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMPLETE) {
+				StartGamePatch.mayVote = false;
+				StartGamePatch.updateVote();
+			}
+
 			if (SlayTheStreamer.config.getBool("VoteOnNeow")) {
-				if (!AbstractDungeon.gridSelectScreen.confirmScreenUp && AbstractDungeon.gridSelectScreen.isJustForConfirming) {
+				// Controls pressing a button after the cards have been selected... probably...? I don't think this is activating when I want it to.
+				if (!StartGamePatch.isVoting && 
+					!AbstractDungeon.gridSelectScreen.confirmScreenUp && AbstractDungeon.gridSelectScreen.isJustForConfirming &&
+					// !AbstractDungeon.isScreenUp &&
+					((Integer)ReflectionHacks.getPrivate(self, NeowEvent.class, "screenNum")) == 3) {
+					SlayTheStreamer.log("ADVANCING OPTION - ACTIVATING NEW REWARDS ~~~~~~~~~~~~~~~~~~~~~~~~");
+
+
 					RoomEventDialog.waitForInput = false;
 					RoomEventDialog.selectedOption = StartGamePatch.option;
+					ReflectionHacks.setPrivate(self, NeowEvent.class, "pickCard", false);
 				}
 			}
 		}
