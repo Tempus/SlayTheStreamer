@@ -44,11 +44,11 @@ import de.robojumper.ststwitch.TwitchConnection;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import chronometry.SlayTheStreamer;
 import basemod.ReflectionHacks;
+import chronometry.BossChoicePatch;
 
 public class MonsterNamesPatch {
 
 	public static final Pattern QUOTE_PATTERN = Pattern.compile("(?i)\"(.*)\"(?:.*?)-?- ?joinrbs(?:[ \\.,].*)?");
-
 
     @SpirePatch(clz=AbstractMonster.class, 
     	method=SpirePatch.CONSTRUCTOR,
@@ -114,20 +114,33 @@ public class MonsterNamesPatch {
     @SpirePatch(clz=AbstractMonster.class, method="renderName")
     public static class renderMonsterNames { 
 	    public static void Replace(AbstractMonster m, final SpriteBatch sb) {
-            float y = m.intentHb.cY - 60.0f;
+	    	if (AbstractDungeon.screen == BossChoicePatch.BOSS_SELECT) { return; }
+
+            float y = m.intentHb.cY - 56.0f;
             float x = m.hb.cX - m.animX;
+            Color c = Settings.CREAM_COLOR;
+
+			if (m.isDying) { 
+	            c = m.tint.color;
+				return;
+			}
+
             sb.setColor(Settings.CREAM_COLOR);
-            // TextureAtlas.AtlasRegion img = ImageMaster.MOVE_NAME_BG;
-            // sb.draw(img, x - img.packedWidth / 2.0f, y - img.packedHeight / 2.0f, img.packedWidth / 2.0f, img.packedHeight / 2.0f, img.packedWidth, img.packedHeight, Settings.scale, Settings.scale * 2.0f, 0.0f);
             FontHelper.renderFontCentered(sb, FontHelper.tipHeaderFont, m.name, x, y, Settings.CREAM_COLOR);
+
+            Random nameIndicer = new Random(m.name.hashCode());
+            String titles[] = SlayTheStreamer.config.getString("MonsterTitles").split(",");
+			String title = titles[(nameIndicer.nextInt(titles.length))];
+
+            FontHelper.renderFontCentered(sb, FontHelper.powerAmountFont, "the " + title, x, y - 20.0F * Settings.scale, Settings.CREAM_COLOR);            
 	    }
 	}
 
     @SpirePatch(clz=AbstractMonster.class, method="refreshIntentHbLocation")
     public static class changeIntentHBPosition { 
 	    public static void Postfix(AbstractMonster m) {
-			m.intentHb.y = m.intentHb.y + 20.0F;
-			m.intentHb.cY = m.intentHb.cY + 20.0F;
+			m.intentHb.y = m.intentHb.y + 42.0F;
+			m.intentHb.cY = m.intentHb.cY + 42.0F;
 	    }
 	}
 

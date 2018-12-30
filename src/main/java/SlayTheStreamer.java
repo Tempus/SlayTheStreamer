@@ -20,6 +20,7 @@ import com.megacrit.cardcrawl.helpers.ImageMaster;
 
 import basemod.BaseMod;
 import basemod.interfaces.*;
+import basemod.ReflectionHacks;
 
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
@@ -28,10 +29,15 @@ import chronometry.patches.*;
 import chronometry.ConfigPanel;
 import chronometry.BossSelectScreen;
 import chronometry.patches.NoSkipBossRelicPatch;
+import chronometry.MonsterMessageRepeater;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import de.robojumper.ststwitch.*;
+
+    // TODO: 
+    //   Active monsters could have a listener that lets the user talk on screen
+    //crashes if you try to restart the run
 
 @SpireInitializer
 public class SlayTheStreamer implements PostInitializeSubscriber, StartGameSubscriber, PostDungeonInitializeSubscriber {
@@ -79,6 +85,10 @@ public class SlayTheStreamer implements PostInitializeSubscriber, StartGameSubsc
             logger.error(e.toString());
         }
 
+        if (config.getBool("VoteOnBosses")) {
+            this.bossHidden = true;
+        }
+
         // Guarantee a whale
         Settings.isTestingNeow = true;
 
@@ -97,6 +107,17 @@ public class SlayTheStreamer implements PostInitializeSubscriber, StartGameSubsc
                 StartGamePatch.updateVote();
             }
         });
+
+        List<TwitchMessageListener> listeners = (List<TwitchMessageListener>)ReflectionHacks.getPrivate(AbstractDungeon.topPanel.twitch.get().connection, TwitchConnection.class, "listeners");
+
+        TwitchMessageListener t = new TwitchMessageListener() {
+            @Override
+            public void onMessage(String msg, String user){
+                MonsterMessageRepeater.parseMessage(msg, user);
+            }
+        };
+
+        listeners.add(t);
     }
 
     public void receivePostDungeonInitialize() {
@@ -115,6 +136,9 @@ public class SlayTheStreamer implements PostInitializeSubscriber, StartGameSubsc
 
         if (!config.has("VoteOnBosses"))        { config.setBool("VoteOnBosses", true); }
         if (!config.has("VoteOnNeow"))          { config.setBool("VoteOnNeow", true); }
+
+        if (!config.has("MerchantNames"))       { config.setString("MerchantNames", "Casey,Anthony"); }
+        if (!config.has("MonsterTitles"))       { config.setString("MonsterTitles", "Painbringer,Snecko's Eye,Lord of Reptiles,Whistleblower,Paragon of Chat,Baron of Slimes,Count of Encouragement,Duke of Wonder,Enslaver of Slaves,Mangler of Malaphors,Antiquated,Unsummoner,Titan,Thorny,Baffling,True Hero,Patron of Demons,Provoker of Perseveration,Bastion of Bureaucracy,Shaper of Towers,Spinner of Cloth,Duchess of the Exordium,Instiller of Dishonesty,Installer of Distilleries,Judge and Jury,Executable,Agreeable,Analytic,Attractive,Backward-Compatible,Bleeding-Edge,Boiling Mad,Brave,Bullheaded,Chic,Cold,Corrugated,Corrupt,Cost-Effective,Daydreamer,Dazzling,Delightful,Destructive,Devoted,Disheveled,Distinctive,Dreamless,Dynamically-Loading,Elastic,Ethical,Exceptional,Expansive,Fashionable,Feature-Driven,Focused,Frictionless,Frustrated,Future-Proof,Handsome,Hasty,Holier-than-thou,Holistic,Illustrious,Incorrigible,Industrious,Inept,Intermandated,Intuitive,Jealous,Levelheaded,Magnanimous,Magnetic,Misrepresented,Multidisciplinary,Muscular,Musical,Obsessive,Open-Sourced,Outlandish,Overzealous,Precognitive,Prehistoric,Princely,Professional,Quarrelsome,Rapturous,Regal,Responsible,Ridiculous,Robust,Rugged,Sleep-Deprived,Smiling,Stubborn,Synergistic,Timid,Underappreciated"); }
 
         try {
             config.save();
@@ -138,5 +162,8 @@ public class SlayTheStreamer implements PostInitializeSubscriber, StartGameSubsc
         // Set us to trial mode so we don't get Neow bonuses
         Settings.isTestingNeow = true;
         Settings.isFinalActAvailable = true;
+        if (config.getBool("VoteOnBosses")) {
+            this.bossHidden = true;
+        }
     }
 }
