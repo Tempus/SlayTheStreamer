@@ -26,14 +26,14 @@
             <artifactId>ModTheSpire</artifactId>
             <version>2.7.0</version>
             <scope>system</scope>
-            <systemPath>/Users/Chronometrics/Library/Application Support/Steam/steamapps/common/SlayTheSpire/SlayTheSpire.app/Contents/Resources/ModTheSpire.jar</systemPath>
+            <systemPath>/Users/Chronometrics/Library/Application Support/Steam/steamapps/workshop/content/646570/1605060445/ModTheSpire.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.evacipated.cardcrawl</groupId>
             <artifactId>BaseMod</artifactId>
             <version>4.0.0</version>
             <scope>system</scope>
-            <systemPath>/Users/Chronometrics/Library/Application Support/Steam/steamapps/common/SlayTheSpire/SlayTheSpire.app/Contents/Resources/mods/BaseMod.jar</systemPath>
+            <systemPath>/Users/Chronometrics/Library/Application Support/Steam/steamapps/workshop/content/646570/1605833019/BaseMod.jar</systemPath>
         </dependency>
 
     </dependencies>

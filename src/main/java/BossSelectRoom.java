@@ -38,6 +38,7 @@ public class BossSelectRoom extends AbstractRoom {
     this.mapImg = ImageMaster.MAP_NODE_TREASURE;
     this.mapImgOutline = ImageMaster.MAP_NODE_TREASURE_OUTLINE;
     this.monsters = new MonsterGroup(new AbstractMonster[0]);
+    this.mapSymbol = "T";
   }
     
   public void onPlayerEntry()
