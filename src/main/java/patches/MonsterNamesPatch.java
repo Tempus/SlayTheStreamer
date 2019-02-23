@@ -73,7 +73,7 @@ public class MonsterNamesPatch {
 
 			if (votedUsernames.size() > 0) {
 
-				/* ¡éBetter Randomness¡é */
+				/* Â¡Ã©Better RandomnessÂ¡Ã© */
 				List<String> screwYouList = new ArrayList(votedUsernames);
 				Map<String, Double> weightedMap = new HashMap(); // <username, weight> pool contains who voted right before
 				double totalWeight = 0.0d;
@@ -94,14 +94,13 @@ public class MonsterNamesPatch {
 					// Weight: pow(<voted> + 15, 1.05) / pow(<used> + 5, 2.5)
 
 					if(SlayTheStreamer.votedTimes.containsKey(tarName)){
-						// voted more than once
 						SlayTheStreamer.votedTimes.put(tarName, SlayTheStreamer.votedTimes.get(tarName) + 1);
-						weightedMap.put(e, Math.pow((double)SlayTheStreamer.votedTimes.get(tarName),2.5d)/Math.pow((double)(chosenTimes + 5),1.9d));
+						weightedMap.put(e, Math.pow((double)(SlayTheStreamer.votedTimes.get(tarName)+15),1.05d)/Math.pow((double)(chosenTimes + 5),2.5d));
 						totalWeight = totalWeight + weightedMap.get(e);
 					}
 					else{ // not voted before
 						SlayTheStreamer.votedTimes.put(tarName, 1);
-						weightedMap.put(e, Math.pow((double)SlayTheStreamer.votedTimes.get(tarName),2.5d)/Math.pow((double)(chosenTimes + 5),1.9d));
+						weightedMap.put(e, Math.pow((double)(SlayTheStreamer.votedTimes.get(tarName)+15),1.05d)/Math.pow((double)(chosenTimes + 5),2.5d));
 						totalWeight = totalWeight + weightedMap.get(e);
 					}
 					SlayTheStreamer.log("Name " + tarName + ", Voted " + SlayTheStreamer.votedTimes.get(tarName) + " time(s), " +
@@ -121,7 +120,7 @@ public class MonsterNamesPatch {
 
 				String usernameOrigin = username;
 
-				/* ¡èBetter Randomness¡è */
+				/* Â¡Ã¨Better RandomnessÂ¡Ã¨ */
 
 				if (SlayTheStreamer.displayNames.containsKey(username)) {
 					username = SlayTheStreamer.displayNames.get(username);
