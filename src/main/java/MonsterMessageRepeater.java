@@ -45,8 +45,11 @@ public class MonsterMessageRepeater {
 				if (AbstractDungeon.getCurrRoom().monsters != null) {
 					for (AbstractMonster m : AbstractDungeon.getCurrRoom().monsters.monsters) {
 						if (m.isDying) { return; }
-						String displayName = SlayTheStreamer.displayNames.get(user).split(" ")[0];
-						if (m.name.split(" ")[0].toLowerCase().equals(displayName.toLowerCase())) {
+						tring username = user;
+						if (SlayTheStreamer.displayNames.containsKey(username)) {
+							username = SlayTheStreamer.displayNames.get(username);
+						}
+						if (m.name.split(" ")[0].toLowerCase().equals(username.split(" ")[0].toLowerCase())) {
 							msg = msg.substring(0, Math.min(msg.length(), MonsterMessageRepeater.MsgLength));
 							if (msg.length() == MonsterMessageRepeater.MsgLength) {
 								msg = msg.substring(0, msg.lastIndexOf(" ")) + "...";
