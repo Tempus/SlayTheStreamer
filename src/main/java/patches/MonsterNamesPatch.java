@@ -46,6 +46,8 @@ import chronometry.SlayTheStreamer;
 import basemod.ReflectionHacks;
 import chronometry.BossChoicePatch;
 
+import static com.badlogic.gdx.math.MathUtils.random;
+
 public class MonsterNamesPatch {
 
 	public static final Pattern QUOTE_PATTERN = Pattern.compile("(?i)\"(.*)\"(?:.*?)-?- ?joinrbs(?:[ \\.,].*)?");
