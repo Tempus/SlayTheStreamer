@@ -192,11 +192,16 @@ public class BossSelectScreen {
             
             default: //Probably a modded boss.
                 try { //This stuff is based on basemod patches, for how it adds custom bosses.
-			        BaseMod.BossInfo bossInfo = BaseMod.getBossInfo(bossID);
-			        if (bossInfo != null) {
+                    BaseMod.BossInfo bossInfo = BaseMod.getBossInfo(bossID);
+		    if (bossInfo != null) {
                         MonsterGroup bossGroup = MonsterHelper.getEncounter(bossKey);
+					
+                        if (bossGroup.monsters.size() == 1)
+			{
+			    return bossGroup.monsters.get(0);
+			}
                         
-                        for (AbstractMonster m : bossGroup)
+                        for (AbstractMonster m : bossGroup.monsters)
                         {
                             if (m.type == AbstractMonster.EnemyType.BOSS)
                             {
@@ -204,12 +209,13 @@ public class BossSelectScreen {
                             }
                         }
                         //log .error("No bosses in encounter: " + bossID);
-			        }
+		    }
                     else
                     {
                     //log .error("Failed to find boss: " + bossID);
                     }
-                } catch (IllegalAccessException | InstantiationException e) {
+                } 
+		catch (IllegalAccessException | InstantiationException e) {
                     //log .error("Failed to instantiate boss: " + bossID);
                 }
         }
