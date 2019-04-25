@@ -194,7 +194,7 @@ public class BossSelectScreen {
                 try { //This stuff is based on basemod patches, for how it adds custom bosses.
                     BaseMod.BossInfo bossInfo = BaseMod.getBossInfo(bossID);
 		    if (bossInfo != null) {
-                        MonsterGroup bossGroup = MonsterHelper.getEncounter(bossKey);
+                        MonsterGroup bossGroup = MonsterHelper.getEncounter(bossID);
 					
                         if (bossGroup.monsters.size() == 1)
 			{
