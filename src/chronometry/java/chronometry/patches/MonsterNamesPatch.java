@@ -1,50 +1,22 @@
 package chronometry.patches;
 
-import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.lang.reflect.*;
-
-import com.evacipated.cardcrawl.modthespire.lib.SpireReturn;
-import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
-import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
-import com.evacipated.cardcrawl.modthespire.lib.SpireEnum;
-import com.evacipated.cardcrawl.modthespire.lib.ByRef;
-
-import com.gikk.twirk.*;
-import com.gikk.twirk.events.*;
-import com.gikk.twirk.types.users.*;
-import com.gikk.twirk.types.twitchMessage.*;
-
-import com.megacrit.cardcrawl.localization.*;
-import com.megacrit.cardcrawl.relics.*;
-import com.megacrit.cardcrawl.blights.*;
-import com.megacrit.cardcrawl.screens.mainMenu.*;
-import com.badlogic.gdx.*;
-import com.megacrit.cardcrawl.dungeons.*;
-import com.badlogic.gdx.math.*;
-import com.megacrit.cardcrawl.characters.*;
-import com.megacrit.cardcrawl.helpers.controller.*;
-import com.megacrit.cardcrawl.core.*;
-import com.megacrit.cardcrawl.rooms.*;
-import com.badlogic.gdx.graphics.g2d.*;
-import com.megacrit.cardcrawl.vfx.*;
-import com.badlogic.gdx.graphics.*;
-import com.megacrit.cardcrawl.helpers.*;
-import com.megacrit.cardcrawl.unlock.*;
-import com.megacrit.cardcrawl.screens.*;
-import com.megacrit.cardcrawl.monsters.*;
-import java.util.*;
-import java.util.stream.*;
-import java.util.function.*;
-import org.apache.logging.log4j.*;
-import de.robojumper.ststwitch.*;
-import de.robojumper.ststwitch.TwitchConnection;
-
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import chronometry.SlayTheStreamer;
 import basemod.ReflectionHacks;
-import chronometry.BossChoicePatch;
+import chronometry.SlayTheStreamer;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
+import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
+import com.gikk.twirk.Twirk;
+import com.gikk.twirk.types.users.TwitchUser;
+import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.helpers.FontHelper;
+import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import de.robojumper.ststwitch.TwitchPanel;
+import de.robojumper.ststwitch.TwitchVoter;
+
+import java.util.*;
+import java.util.regex.Pattern;
 
 import static com.badlogic.gdx.math.MathUtils.random;
 

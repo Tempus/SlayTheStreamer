@@ -29,3 +29,6 @@ PSDs/
 hs_err_pid*
 *.psd
 *.ai
+*.xml
+*.MF
+src/chronometry/chronometry.iml

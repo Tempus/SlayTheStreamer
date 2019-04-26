@@ -1,39 +1,29 @@
 package chronometry;
 
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Properties;
-import java.util.Iterator;
-import java.util.*;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-
-import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.characters.AbstractPlayer.PlayerClass;
-import com.megacrit.cardcrawl.core.EnergyManager;
-import com.megacrit.cardcrawl.core.Settings;
-import com.megacrit.cardcrawl.helpers.FontHelper;
-import com.megacrit.cardcrawl.helpers.ImageMaster;
-
 import basemod.BaseMod;
-import basemod.interfaces.*;
 import basemod.ReflectionHacks;
-
-import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
-import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
-
+import basemod.interfaces.PostDungeonInitializeSubscriber;
+import basemod.interfaces.PostInitializeSubscriber;
+import basemod.interfaces.StartGameSubscriber;
 import chronometry.patches.*;
-import chronometry.ConfigPanel;
-import chronometry.BossSelectScreen;
 import chronometry.patches.NoSkipBossRelicPatch;
-import chronometry.MonsterMessageRepeater;
-
+import com.badlogic.gdx.graphics.Texture;
+import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
+import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
+import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.helpers.ImageMaster;
+import de.robojumper.ststwitch.TwitchConnection;
+import de.robojumper.ststwitch.TwitchMessageListener;
+import de.robojumper.ststwitch.TwitchVoteListener;
+import de.robojumper.ststwitch.TwitchVoter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import de.robojumper.ststwitch.*;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
     // TODO:
     //   Active monsters could have a listener that lets the user talk on screen

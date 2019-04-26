@@ -1,32 +1,31 @@
 package chronometry.patches;
 
-import java.util.*;
-import java.lang.reflect.*;
-
+import basemod.ReflectionHacks;
+import chronometry.SlayTheStreamer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
-import com.evacipated.cardcrawl.modthespire.lib.SpireReturn;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
-import com.evacipated.cardcrawl.modthespire.lib.ByRef;
+import com.evacipated.cardcrawl.modthespire.lib.SpireReturn;
+import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.cards.CardGroup;
+import com.megacrit.cardcrawl.cards.curses.AscendersBane;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.events.RoomEventDialog;
+import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.neow.NeowEvent;
 import com.megacrit.cardcrawl.neow.NeowReward;
 import com.megacrit.cardcrawl.neow.NeowRoom;
-import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.cards.CardGroup;
-import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.unlock.UnlockTracker;
-import com.megacrit.cardcrawl.helpers.ImageMaster;
-import com.megacrit.cardcrawl.helpers.FontHelper;
-import com.megacrit.cardcrawl.map.DungeonMap;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
-import de.robojumper.ststwitch.*;
+import com.megacrit.cardcrawl.unlock.UnlockTracker;
+import de.robojumper.ststwitch.TwitchPanel;
+import de.robojumper.ststwitch.TwitchVoteOption;
+import de.robojumper.ststwitch.TwitchVoter;
 
-import com.megacrit.cardcrawl.events.RoomEventDialog;
-
-import chronometry.SlayTheStreamer;
-import basemod.ReflectionHacks;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Optional;
 
 // Attempt 1
 // 10:01:51.513 INFO neow.NeowEvent> 0
@@ -103,7 +102,10 @@ public class StartGamePatch {
 						.replace("#g", "")
 						.replace("#r", "")
 						.replace("[ ", "")
-						.replace(" ]", "");
+						.replace(" ]", "")
+						.replace("]", "") //hi reina
+						.replace("[", "")
+						.replace(".,", ",");
 					} else {
 						StartGamePatch.neowOptions[i] = ((ArrayList<NeowReward>)ReflectionHacks.getPrivate(self, NeowEvent.class, "rewards")).get(i).optionLabel
 						.replace("#g", "")
@@ -213,13 +215,13 @@ public class StartGamePatch {
                 }
 
                 float y = (Settings.OPTION_Y - 500.0F * Settings.scale);
-      			y += i * -82.0F;
-      			y -= 4 * -82.0F;
+      			y += i * -82.0F * Settings.scale;
+      			y -= 4 * -82.0F * Settings.scale;
       			// y += 18.5F;
 
                 FontHelper.renderFontRightAligned(sb, FontHelper.panelEndTurnFont, s, 160.0F * Settings.scale, y, Color.WHITE.cpy());
             }
-            FontHelper.renderFontCentered(sb, FontHelper.panelNameFont, "VOTE NOW: " + twitchVoter.getSecondsRemaining() + "s left.", 340.0F, 77.0F + 82.0F * 4 * Settings.scale, Color.WHITE.cpy());
+            FontHelper.renderFontCentered(sb, FontHelper.panelNameFont, "VOTE NOW: " + twitchVoter.getSecondsRemaining() + "s left.", 340.0F * Settings.scale, 77.0F * Settings.scale + 82.0F * 4 * Settings.scale, Color.WHITE.cpy());
         }
     }
 
@@ -230,6 +232,11 @@ public class StartGamePatch {
 
 		// Don't forget remove all cards in deck
 		AbstractDungeon.player.masterDeck.group.clear();
+
+		if (AbstractDungeon.ascensionLevel > 9)
+		{
+			AbstractDungeon.player.masterDeck.group.add(new AscendersBane());
+		}
 
 		CardGroup sealedGroup = new CardGroup(CardGroup.CardGroupType.UNSPECIFIED);
 		
