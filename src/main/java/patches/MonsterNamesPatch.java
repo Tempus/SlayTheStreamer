@@ -46,11 +46,13 @@ import chronometry.SlayTheStreamer;
 import basemod.ReflectionHacks;
 import chronometry.BossChoicePatch;
 
+import static com.badlogic.gdx.math.MathUtils.random;
+
 public class MonsterNamesPatch {
 
 	public static final Pattern QUOTE_PATTERN = Pattern.compile("(?i)\"(.*)\"(?:.*?)-?- ?joinrbs(?:[ \\.,].*)?");
 
-    @SpirePatch(clz=AbstractMonster.class, 
+    @SpirePatch(clz=AbstractMonster.class,
     	method=SpirePatch.CONSTRUCTOR,
     	paramtypez={
     		String.class,
@@ -65,17 +67,62 @@ public class MonsterNamesPatch {
     		float.class,
     		boolean.class
     	})
-    public static class changeMonsterNames { 
+    public static class changeMonsterNames {
         public static void Postfix(AbstractMonster self, final String name, final String id, final int maxHealth, final float hb_x, final float hb_y, final float hb_w, final float hb_h, final String imgUrl, final float offsetX, final float offsetY, final boolean ignoreBlights) {
         	// Get the right name
             final TwitchVoter twitchVoter = TwitchPanel.getDefaultVoter().get();
 			Set<String> votedUsernames = (Set<String>)ReflectionHacks.getPrivate(twitchVoter, TwitchVoter.class, "votedUsernames");
 
 			if (votedUsernames.size() > 0) {
-				List<String> screwYouList = new ArrayList(votedUsernames);
-				Collections.shuffle(screwYouList);
 
-				String username = screwYouList.get(0);
+				/* ¡éBetter Randomness¡é */
+				List<String> screwYouList = new ArrayList(votedUsernames);
+				Map<String, Double> weightedMap = new HashMap(); // <username, weight> pool contains who voted right before
+				double totalWeight = 0.0d;
+
+				for(String e: screwYouList){
+					String tarName = e;
+					if (SlayTheStreamer.displayNames.containsKey(tarName)) {
+						tarName = SlayTheStreamer.displayNames.get(tarName);
+					}
+
+					int chosenTimes;
+					if (SlayTheStreamer.usedNames.containsKey(tarName)) {
+						chosenTimes = SlayTheStreamer.usedNames.get(tarName);
+					} else {
+						chosenTimes = 0;
+					}
+
+					// Weight: pow(<voted> + 15, 1.05) / pow(<used> + 5, 2.5)
+
+					if(SlayTheStreamer.votedTimes.containsKey(tarName)){
+						SlayTheStreamer.votedTimes.put(tarName, SlayTheStreamer.votedTimes.get(tarName) + 1);
+						weightedMap.put(e, Math.pow((double)(SlayTheStreamer.votedTimes.get(tarName)+15),1.05d)/Math.pow((double)(chosenTimes + 5),2.5d));
+						totalWeight = totalWeight + weightedMap.get(e);
+					}
+					else{ // not voted before
+						SlayTheStreamer.votedTimes.put(tarName, 1);
+						weightedMap.put(e, Math.pow((double)(SlayTheStreamer.votedTimes.get(tarName)+15),1.05d)/Math.pow((double)(chosenTimes + 5),2.5d));
+						totalWeight = totalWeight + weightedMap.get(e);
+					}
+					SlayTheStreamer.log("Name " + tarName + ", Voted " + SlayTheStreamer.votedTimes.get(tarName) + " time(s), " +
+							"Chosed " + chosenTimes + " time(s), " + "weight is " + weightedMap.get(e));
+				}
+
+				String username = null;
+				double randomVal = random.nextDouble() * totalWeight;
+
+				for(String e: weightedMap.keySet()){
+					randomVal -= weightedMap.get(e);
+					if(randomVal <= 0.0d){
+						username = e;
+						break;
+					}
+				}
+
+				String usernameOrigin = username;
+
+				/* ¡èBetter Randomness¡è */
 
 				if (SlayTheStreamer.displayNames.containsKey(username)) {
 					username = SlayTheStreamer.displayNames.get(username);
@@ -97,14 +144,14 @@ public class MonsterNamesPatch {
 
 				//.substring(0, 1).toUpperCase() + username.substring(1);
 				self.name = username;
-				votedUsernames.remove(screwYouList.get(0));
+				votedUsernames.remove(usernameOrigin);
 			}
         }
     }
 
 
     @SpirePatch(clz=Twirk.class, method="incommingMessage")
-    public static class storeTwitchNames { 
+    public static class storeTwitchNames {
     	@SpireInsertPatch( rloc = 33, localvars={"user"} )
         public static void Insert(Twirk self, String line, TwitchUser user) {
         	SlayTheStreamer.displayNames.put(user.getUserName(), user.getDisplayName());
@@ -112,7 +159,7 @@ public class MonsterNamesPatch {
     }
 
     @SpirePatch(clz=AbstractMonster.class, method="renderName")
-    public static class renderMonsterNames { 
+    public static class renderMonsterNames {
 	    public static void Replace(AbstractMonster m, final SpriteBatch sb) {
 	    	if (AbstractDungeon.screen == BossChoicePatch.BOSS_SELECT) { return; }
 
@@ -120,7 +167,7 @@ public class MonsterNamesPatch {
             float x = m.hb.cX - m.animX;
             Color c = Settings.CREAM_COLOR;
 
-			if (m.isDying) { 
+			if (m.isDying) {
 	            c = m.tint.color;
 				return;
 			}
@@ -132,12 +179,12 @@ public class MonsterNamesPatch {
             String titles[] = SlayTheStreamer.config.getString("MonsterTitles").split(",");
 			String title = titles[(nameIndicer.nextInt(titles.length))];
 
-            FontHelper.renderFontCentered(sb, FontHelper.powerAmountFont, "the " + title, x, y - 20.0F * Settings.scale, Settings.CREAM_COLOR);            
+            FontHelper.renderFontCentered(sb, FontHelper.powerAmountFont, "the " + title, x, y - 20.0F * Settings.scale, Settings.CREAM_COLOR);
 	    }
 	}
 
     @SpirePatch(clz=AbstractMonster.class, method="refreshIntentHbLocation")
-    public static class changeIntentHBPosition { 
+    public static class changeIntentHBPosition {
 	    public static void Postfix(AbstractMonster m) {
 			m.intentHb.y = m.intentHb.y + 42.0F;
 			m.intentHb.cY = m.intentHb.cY + 42.0F;
@@ -145,13 +192,13 @@ public class MonsterNamesPatch {
 	}
 
     // @SpirePatch(clz=TwitchConnection.class, method="getMessageListener")
-    // public static class renderTwitchVotes { 
+    // public static class renderTwitchVotes {
     //     public static TwirkListener Replace(TwitchConnection self, Twirk twirk, Object gameLock, final TwitchConnection conn) {
 
 		  //   return new TwirkListenerBaseImpl()
 		  //   {
 		  //       public void onDisconnect() {}
-		      
+
 	   //          public void onPrivMsg(final TwitchUser sender, final TwitchMessage message) {
 	   //              final String content = message.getContent().trim();
 	   //              final String senderName = sender.getDisplayName();
@@ -231,7 +278,7 @@ public class MonsterNamesPatch {
 	    while (input >= 1) {
 	        s += "I";
 	        input -= 1;
-	    }    
+	    }
 	    return s;
 	}
 }

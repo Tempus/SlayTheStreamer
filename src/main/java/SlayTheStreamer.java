@@ -35,7 +35,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import de.robojumper.ststwitch.*;
 
-    // TODO: 
+    // TODO:
     //   Active monsters could have a listener that lets the user talk on screen
     //crashes if you try to restart the run
 
@@ -55,8 +55,9 @@ public class SlayTheStreamer implements PostInitializeSubscriber, StartGameSubsc
     public static NoSkipBossRelicPatch noSkip;
     public static Texture startScreenImage;
 
-    public static Map<String, Integer> usedNames = new HashMap();
-    public static Map<String, String> displayNames = new HashMap();
+    public static Map<String, Integer> usedNames = new HashMap(); // displayname, # voted
+    public static Map<String, String> displayNames = new HashMap(); // username, displayname
+    public static Map<String, Integer> votedTimes = new HashMap();  // displayname, voted times
 
     @SuppressWarnings("deprecation")
     public SlayTheStreamer() {
@@ -70,7 +71,7 @@ public class SlayTheStreamer implements PostInitializeSubscriber, StartGameSubsc
     public static void initialize() {
         @SuppressWarnings("unused")
         SlayTheStreamer slayTheStreamer = new SlayTheStreamer();
-    }   
+    }
 
     public void receivePostInitialize() {
         bossSelectScreen = new BossSelectScreen();
@@ -93,7 +94,7 @@ public class SlayTheStreamer implements PostInitializeSubscriber, StartGameSubsc
         Settings.isTestingNeow = true;
 
         Texture badgeTexture = ImageMaster.loadImage("versusImages/Badge.png");
-        BaseMod.registerModBadge(badgeTexture, MOD_NAME, AUTHOR, DESCRIPTION, new ConfigPanel());  
+        BaseMod.registerModBadge(badgeTexture, MOD_NAME, AUTHOR, DESCRIPTION, new ConfigPanel());
 
         // Neow Voting - needs to only happen once!
         TwitchVoter.registerListener(new TwitchVoteListener() {
@@ -101,7 +102,7 @@ public class SlayTheStreamer implements PostInitializeSubscriber, StartGameSubsc
             public void onTwitchAvailable() {
                 StartGamePatch.updateVote();
             }
-            
+
             @Override
             public void onTwitchUnavailable() {
                 StartGamePatch.updateVote();
