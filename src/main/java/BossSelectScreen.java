@@ -189,6 +189,35 @@ public class BossSelectScreen {
                 return new TimeEater();
             case "Donu and Deca":
                 return new Donu();
+            
+            default: //Probably a modded boss.
+                try { //This stuff is based on basemod patches, for how it adds custom bosses.
+                    BaseMod.BossInfo bossInfo = BaseMod.getBossInfo(bossID);
+		    if (bossInfo != null) {
+                        MonsterGroup bossGroup = MonsterHelper.getEncounter(bossID);
+					
+                        if (bossGroup.monsters.size() == 1)
+			{
+			    return bossGroup.monsters.get(0);
+			}
+                        
+                        for (AbstractMonster m : bossGroup.monsters)
+                        {
+                            if (m.type == AbstractMonster.EnemyType.BOSS)
+                            {
+                                return m;
+                            }
+                        }
+                        //log .error("No bosses in encounter: " + bossID);
+		    }
+                    else
+                    {
+                    //log .error("Failed to find boss: " + bossID);
+                    }
+                } 
+		catch (IllegalAccessException | InstantiationException e) {
+                    //log .error("Failed to instantiate boss: " + bossID);
+                }
         }
         return null;
     }
