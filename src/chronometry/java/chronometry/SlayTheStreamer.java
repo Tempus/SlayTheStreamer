@@ -2,6 +2,7 @@ package chronometry;
 
 import basemod.BaseMod;
 import basemod.ReflectionHacks;
+import basemod.interfaces.EditStringsSubscriber;
 import basemod.interfaces.PostDungeonInitializeSubscriber;
 import basemod.interfaces.PostInitializeSubscriber;
 import basemod.interfaces.StartGameSubscriber;
@@ -13,6 +14,7 @@ import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
+import com.megacrit.cardcrawl.localization.UIStrings;
 import de.robojumper.ststwitch.TwitchConnection;
 import de.robojumper.ststwitch.TwitchMessageListener;
 import de.robojumper.ststwitch.TwitchVoteListener;
@@ -30,7 +32,14 @@ import java.util.Map;
     //crashes if you try to restart the run
 
 @SpireInitializer
-public class SlayTheStreamer implements PostInitializeSubscriber, StartGameSubscriber, PostDungeonInitializeSubscriber {
+public class SlayTheStreamer
+        implements
+        PostInitializeSubscriber,
+        StartGameSubscriber,
+        PostDungeonInitializeSubscriber,
+        EditStringsSubscriber
+
+{
 
     public static final Logger logger = LogManager.getLogger(SlayTheStreamer.class.getName());
 
@@ -156,5 +165,25 @@ public class SlayTheStreamer implements PostInitializeSubscriber, StartGameSubsc
         if (config.getBool("VoteOnBosses")) {
             this.bossHidden = true;
         }
+    }
+
+    @Override
+    public void receiveEditStrings()
+    {
+        loadLocStrings("eng");
+        try
+        {
+            loadLocStrings(Settings.language.toString().toLowerCase());
+        }
+        catch (Exception e)
+        {
+            System.out.println("Slay the Streamer | Language pack not found, default to eng.");
+        }
+
+    }
+
+    private void loadLocStrings(String languageKey)
+    {
+        BaseMod.loadCustomStringsFile(UIStrings.class, "SlayTheStreamer/localizations/"+languageKey+"/uiStrings.json");
     }
 }

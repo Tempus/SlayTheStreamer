@@ -4,6 +4,7 @@ import chronometry.SlayTheStreamer;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.rewards.RewardItem;
@@ -22,7 +23,7 @@ public class CardRewardPatch {
     @SpirePatch(clz=CardRewardScreen.class, method="open")
     public static class openHook { 
         public static void Postfix(CardRewardScreen self, final ArrayList<AbstractCard> cards, final RewardItem rItem, final String header) {
-            AbstractDungeon.dynamicBanner.appear("Choose the Worst Card");
+            AbstractDungeon.dynamicBanner.appear(CardCrawlGame.languagePack.getUIString("versus:ForPlayer").TEXT[0]);
         }
     }
 }

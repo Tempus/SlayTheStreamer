@@ -6,7 +6,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
+import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.dungeons.TheEnding;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.map.DungeonMap;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
@@ -35,7 +37,7 @@ public class BossChoicePatch {
 	public static class HideBossAtDungeonStart { 
 		public static void Postfix(ProceedButton self, AbstractRoom room) {
 			if (SlayTheStreamer.config.getBool("VoteOnBosses")) {
-				if (AbstractDungeon.actNum != 4) {
+				if (Settings.isEndless || !AbstractDungeon.id.equals(TheEnding.ID)) {
 			        SlayTheStreamer.bossHidden = true;
 		      	}
 		    }

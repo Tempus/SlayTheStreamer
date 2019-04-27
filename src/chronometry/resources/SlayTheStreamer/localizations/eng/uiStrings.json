@@ -1,0 +1,15 @@
+{
+  "versus:ForPlayer":
+  {
+    "TEXT":
+            [
+              "Choose the Worst Card",
+              "Choose the Most Deadly",
+              "VOTE NOW: ",
+              "s left.",
+              "Voting on boss ended... chose ",
+              "Voting on Neow's bonus ended... chose ",
+              "Chat vs. "
+            ]
+  }
+}

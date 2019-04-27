@@ -9,6 +9,7 @@ import com.evacipated.cardcrawl.modthespire.lib.SpireReturn;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.cards.curses.AscendersBane;
+import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.events.RoomEventDialog;
@@ -152,7 +153,7 @@ public class StartGamePatch {
         StartGamePatch.isVoting = false;
         if (StartGamePatch.getVoter().isPresent()) {
             final TwitchVoter twitchVoter = StartGamePatch.getVoter().get();
-            AbstractDungeon.topPanel.twitch.ifPresent(twitchPanel -> twitchPanel.connection.sendMessage("Voting on Neow's bonus ended... chose " + twitchVoter.getOptions()[option].displayName));
+            AbstractDungeon.topPanel.twitch.ifPresent(twitchPanel -> twitchPanel.connection.sendMessage(CardCrawlGame.languagePack.getUIString("versus:ForPlayer").TEXT[5] + twitchVoter.getOptions()[option].displayName));
         }
 
         // Occurs when the vote runs out of time.
@@ -221,7 +222,9 @@ public class StartGamePatch {
 
                 FontHelper.renderFontRightAligned(sb, FontHelper.panelEndTurnFont, s, 160.0F * Settings.scale, y, Color.WHITE.cpy());
             }
-            FontHelper.renderFontCentered(sb, FontHelper.panelNameFont, "VOTE NOW: " + twitchVoter.getSecondsRemaining() + "s left.", 340.0F * Settings.scale, 77.0F * Settings.scale + 82.0F * 4 * Settings.scale, Color.WHITE.cpy());
+            FontHelper.renderFontCentered(sb, FontHelper.panelNameFont, CardCrawlGame.languagePack.getUIString("versus:ForPlayer").TEXT[2]
+																			+ twitchVoter.getSecondsRemaining() + CardCrawlGame.languagePack.getUIString("versus:ForPlayer").TEXT[3],
+					340.0F * Settings.scale, 77.0F * Settings.scale + 82.0F * 4 * Settings.scale, Color.WHITE.cpy());
         }
     }
 

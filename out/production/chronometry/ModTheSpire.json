@@ -4,9 +4,9 @@
   "author_list": ["Chronometrics", "Jedi#3970"],
   "description": "Chat vs Streamer in the ultimate showdown! The streamer begins with a winnable deck, and chat tries to find ways to ruin it by voting and influencing the run throughout the stream. Requires Twitch Integration to work.",
   "dependencies": ["basemod"],
-  "version": "1.1",
+  "version": "1.2",
   "credits": "Special thanks to Baalorlord, Karisa.",
   "sts_version": "01-23-2019",
   "mts_version": "3.10.1",
-  "update_json": "https://api.github.com/repos/tempus/SlayTheStreamer/releases/latest"  
+  "update_json": "https://api.github.com/repos/jedi515/SlayTheStreamer/releases/latest"
 }

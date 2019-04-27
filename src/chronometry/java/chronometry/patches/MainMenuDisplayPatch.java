@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
+import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.FontHelper;
@@ -24,7 +25,7 @@ public class MainMenuDisplayPatch {
 			if (AbstractDungeon.topPanel.twitch.isPresent()) {
 				TwitchConfig t = AbstractDungeon.topPanel.twitch.get().connection.getTwitchConfig();
 				String username = t.getUsername();
-			    FontHelper.renderFontCentered(sb, FontHelper.bannerFont, "Chat vs. " + username, Settings.WIDTH / 2.0F, Settings.HEIGHT / 2.0F - 196.0F * Settings.scale, white);
+			    FontHelper.renderFontCentered(sb, FontHelper.bannerFont, CardCrawlGame.languagePack.getUIString("versus:ForPlayer").TEXT[6] + username, Settings.WIDTH / 2.0F, Settings.HEIGHT / 2.0F - 196.0F * Settings.scale, white);
 			    // panelNameFont - tiny, but well balanced
 			    // bannerNameFont  - Big, pretty spiffy looking
 

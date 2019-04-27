@@ -16,6 +16,7 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.MonsterHelper;
+import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.monsters.beyond.AwakenedOne;
@@ -56,6 +57,9 @@ public class BossSelectScreen {
     
     protected ArrayList<AbstractMonster> bosses = new ArrayList();
     boolean reopened = false;
+
+    public static UIStrings bossRoomStrings = CardCrawlGame.languagePack.getUIString("versus:ForPlayer");
+    public static String[] TEXT = bossRoomStrings.TEXT;
 
     // Constructor
     public BossSelectScreen() {
@@ -142,8 +146,7 @@ public class BossSelectScreen {
         Settings.hideCombatElements = true;
 
         // Display
-        //TODO: unhardcode
-        AbstractDungeon.dynamicBanner.appear(800.0f * Settings.scale, "Choose the Most Deadly");
+        AbstractDungeon.dynamicBanner.appear(800.0f * Settings.scale, TEXT[1]);
         AbstractDungeon.isScreenUp = true;
         AbstractDungeon.screen = BossChoicePatch.BOSS_SELECT;
         AbstractDungeon.overlayMenu.proceedButton.hide();
@@ -283,7 +286,7 @@ public class BossSelectScreen {
                     }
                 }
             }
-            FontHelper.renderFontCentered(sb, FontHelper.panelNameFont, "VOTE NOW: " + twitchVoter.getSecondsRemaining() + "s left.", Settings.WIDTH / 2.0f, 192.0f * Settings.scale, Color.WHITE.cpy());
+            FontHelper.renderFontCentered(sb, FontHelper.panelNameFont, TEXT[2] + twitchVoter.getSecondsRemaining() + TEXT[3], Settings.WIDTH / 2.0f, 192.0f * Settings.scale, Color.WHITE.cpy());
         }
         sb.draw(SlayTheStreamer.startScreenImage, Settings.WIDTH / 2.0F, 0);
     }
@@ -317,7 +320,7 @@ public class BossSelectScreen {
         this.isVoting = false;
         if (this.getVoter().isPresent()) {
             final TwitchVoter twitchVoter = this.getVoter().get();
-            AbstractDungeon.topPanel.twitch.ifPresent(twitchPanel -> twitchPanel.connection.sendMessage("Voting on boss ended... chose " + twitchVoter.getOptions()[option].displayName));
+            AbstractDungeon.topPanel.twitch.ifPresent(twitchPanel -> twitchPanel.connection.sendMessage(TEXT[4] + twitchVoter.getOptions()[option].displayName));
         }
 
         // Make the changes to the dungeon
