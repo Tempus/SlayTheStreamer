@@ -54,6 +54,44 @@ public class BossChoicePatch {
    		}
 	}
 
+
+//	@SpirePatch(clz = AbstractMonster.class, method = "render")
+//	public static class MonsterStaticRender
+//	{
+//		@SpireInsertPatch(locator = Locator.class)
+//		public static SpireReturn Insert(AbstractMonster __instance, SpriteBatch sb)
+//		{
+//			if (AbstractDungeon.screen == BossChoicePatch.BOSS_SELECT)
+//			{
+//				try {
+//					Texture img = null;
+//					__instance.getClass().getDeclaredField("img");
+//
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//				//sb.draw(this.img,
+//				// this.drawX - (float)this.img.getWidth() * Settings.scale / 2.0F + this.animX,
+//				// this.drawY + this.animY + AbstractDungeon.sceneOffsetY,
+//				// (float)this.img.getWidth() * Settings.scale,
+//				// (float)this.img.getHeight() * Settings.scale,
+//				// 0, 0, this.img.getWidth(), this.img.getHeight(),
+//				// this.flipHorizontal, this.flipVertical);
+//				return SpireReturn.Return(null);
+//			}
+//			return SpireReturn.Continue();
+//		}
+//	}
+//
+//	private static class Locator extends SpireInsertLocator
+//	{
+//		public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException
+//		{
+//			Matcher finalMatcher = new Matcher.MethodCallMatcher(SpriteBatch.class, "draw");
+//			return LineFinder.findInOrder(ctMethodToPatch, new ArrayList<Matcher>(), finalMatcher);
+//		}
+//	}
+
 	//TODO: Brave undead...
 //	@SpirePatch(clz = AbstractMonster.class, method = SpirePatch.CONSTRUCTOR, paramtypez = {String.class, String.class, Integer.class, Float.class, Float.class, Float.class, Float.class, String.class, Float.class, Float.class, Boolean.class})
 //	public static class MakeStaticImageBossesCute {

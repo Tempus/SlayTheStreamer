@@ -22,7 +22,6 @@ public class HexaghostModel extends AbstractMonster {
   private float plasma1Angle = 0.0F;
   private float plasma2Angle = 0.0F;
   private float plasma3Angle = 0.0F;
-  private static final float BODY_OFFSET_Y = 512.0F * Settings.scale;
 
   public float rotationSpeed = 5.0F;
   public float targetRotationSpeed = 120.0F;
@@ -88,10 +87,30 @@ public class HexaghostModel extends AbstractMonster {
   {
     // Render Body
     sb.setColor(this.tint.color);
-    sb.draw(this.plasma3, this.drawX - 256.0F + this.animX + 12.0F * Settings.scale, this.drawY + this.animY + AbstractDungeon.sceneOffsetY + this.effect.y * 2.0F - 256.0F + BODY_OFFSET_Y* Settings.scale, 256.0F, 256.0F, 512.0F, 512.0F, Settings.scale * 0.475F, Settings.scale * 0.475F, this.plasma3Angle, 0, 0, 512, 512, false, false);
-    sb.draw(this.plasma2, this.drawX - 256.0F + this.animX + 6.0F * Settings.scale, this.drawY + this.animY + AbstractDungeon.sceneOffsetY + this.effect.y - 256.0F + BODY_OFFSET_Y* Settings.scale, 256.0F, 256.0F, 512.0F, 512.0F, Settings.scale*0.5F, Settings.scale*0.5F, this.plasma2Angle, 0, 0, 512, 512, false, false);
-    sb.draw(this.plasma1, this.drawX - 256.0F + this.animX, this.drawY + this.animY + AbstractDungeon.sceneOffsetY + this.effect.y * 0.5F - 256.0F + BODY_OFFSET_Y* Settings.scale, 256.0F, 256.0F, 512.0F, 512.0F, Settings.scale*0.5F, Settings.scale*0.5F, this.plasma1Angle, 0, 0, 512, 512, false, false);
-    sb.draw(this.shadow, this.drawX - 256.0F + this.animX + 12.0F * Settings.scale, this.drawY + this.animY + AbstractDungeon.sceneOffsetY + this.effect.y / 4.0F - 15.0F * Settings.scale - 256.0F + BODY_OFFSET_Y* Settings.scale, 256.0F, 256.0F, 512.0F, 512.0F, Settings.scale*0.5F, Settings.scale*0.5F, 0.0F, 0, 0, 512, 512, false, false); 
+    sb.draw(this.plasma3,
+            this.drawX - 256.0F + this.animX + 12.0F * Settings.scale,
+            this.drawY + this.animY + AbstractDungeon.sceneOffsetY + this.effect.y * 2.0F + 256.0F* Settings.scale,
+            256.0F, 256.0F, 512.0F, 512.0F,
+            Settings.scale * 0.475F, Settings.scale * 0.475F,
+            this.plasma3Angle, 0, 0, 512, 512, false, false);
+    sb.draw(this.plasma2,
+            this.drawX - 256.0F + this.animX + 6.0F * Settings.scale,
+            this.drawY + this.animY + AbstractDungeon.sceneOffsetY + this.effect.y + 256.0F* Settings.scale,
+            256.0F, 256.0F, 512.0F, 512.0F,
+            Settings.scale*0.5F, Settings.scale*0.5F,
+            this.plasma2Angle, 0, 0, 512, 512, false, false);
+    sb.draw(this.plasma1,
+            this.drawX - 256.0F + this.animX,
+            this.drawY + this.animY + AbstractDungeon.sceneOffsetY + this.effect.y * 0.5F + 256.0F* Settings.scale,
+            256.0F, 256.0F, 512.0F, 512.0F,
+            Settings.scale*0.5F, Settings.scale*0.5F,
+            this.plasma1Angle, 0, 0, 512, 512, false, false);
+    sb.draw(this.shadow,
+            this.drawX - 256.0F + this.animX + 12.0F * Settings.scale,
+            this.drawY + this.animY + AbstractDungeon.sceneOffsetY + this.effect.y / 4.0F - 15.0F * Settings.scale + 256.0F* Settings.scale,
+            256.0F, 256.0F, 512.0F, 512.0F,
+            Settings.scale*0.5F, Settings.scale*0.5F,
+            0.0F, 0, 0, 512, 512, false, false);
 
     // Render Core
     sb.draw(this.core,

@@ -16,7 +16,10 @@ public class CardRewardPatch {
     @SpirePatch(clz=CardRewardScreen.class, method="renderTwitchVotes")
     public static class renderTwitchVotes { 
         public static void Postfix(CardRewardScreen self, final SpriteBatch sb) {
-            sb.draw(SlayTheStreamer.startScreenImage, Settings.WIDTH / 2.0F, 0);
+            sb.draw(SlayTheStreamer.startScreenImage,
+                    Settings.WIDTH / 2.0F, 0,
+                    SlayTheStreamer.startScreenImage.getWidth() * Settings.scale,
+                    SlayTheStreamer.startScreenImage.getHeight() * Settings.scale);
         }
     }
 

@@ -234,12 +234,7 @@ public class StartGamePatch {
 		ReflectionHacks.setPrivate(self, NeowEvent.class, "pickCard", true);
 
 		// Don't forget remove all cards in deck
-		AbstractDungeon.player.masterDeck.group.clear();
-
-		if (AbstractDungeon.ascensionLevel > 9)
-		{
-			AbstractDungeon.player.masterDeck.group.add(new AscendersBane());
-		}
+		AbstractDungeon.player.masterDeck.group.removeIf(c -> !c.cardID.equals(AscendersBane.ID));
 
 		CardGroup sealedGroup = new CardGroup(CardGroup.CardGroupType.UNSPECIFIED);
 		
@@ -279,6 +274,10 @@ public class StartGamePatch {
 		}
 
 		// Open the choice dialog
-		AbstractDungeon.gridSelectScreen.open(sealedGroup, SlayTheStreamer.config.getInt("CardPickChoices"), "Choose " + SlayTheStreamer.config.getInt("CardPickChoices") + " cards.", false);
+		AbstractDungeon.gridSelectScreen.open(sealedGroup, SlayTheStreamer.config.getInt("CardPickChoices"),
+				CardCrawlGame.languagePack.getUIString("versus:ForPlayer").TEXT[9] +
+						SlayTheStreamer.config.getInt("CardPickChoices") +
+						CardCrawlGame.languagePack.getUIString("versus:ForPlayer").TEXT[10],
+				false);
 	}
 }

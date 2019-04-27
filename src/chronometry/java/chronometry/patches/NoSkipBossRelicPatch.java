@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpireReturn;
+import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.FontHelper;
@@ -42,7 +43,7 @@ public class NoSkipBossRelicPatch {
     @SpirePatch(clz=BossRelicSelectScreen.class, method="open")
     public static class openHook { 
         public static void Postfix(BossRelicSelectScreen self, final ArrayList<AbstractRelic> chosenRelics) {
-            AbstractDungeon.dynamicBanner.appear(800.0f * Settings.scale, "Choose the Worst Boss Relic");
+            AbstractDungeon.dynamicBanner.appear(800.0f * Settings.scale, CardCrawlGame.languagePack.getUIString("versus:ForPlayer").TEXT[7]);
             NoSkipBossRelicPatch.mayVote = true;
             SlayTheStreamer.noSkip.updateVote();
         }
@@ -121,7 +122,7 @@ public class NoSkipBossRelicPatch {
         if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.BOSS_REWARD) {
             if (TwitchPanel.getDefaultVoter().isPresent()) {
                 final TwitchVoter twitchVoter = TwitchPanel.getDefaultVoter().get();
-                AbstractDungeon.topPanel.twitch.ifPresent(twitchPanel -> twitchPanel.connection.sendMessage("Voting on relic ended... chose " + twitchVoter.getOptions()[option].displayName));
+                AbstractDungeon.topPanel.twitch.ifPresent(twitchPanel -> twitchPanel.connection.sendMessage(CardCrawlGame.languagePack.getUIString("versus:ForPlayer").TEXT[8] + twitchVoter.getOptions()[option].displayName));
             }
             while (AbstractDungeon.screen != AbstractDungeon.CurrentScreen.BOSS_REWARD) {
                 AbstractDungeon.closeCurrentScreen();

@@ -15,6 +15,7 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.localization.UIStrings;
+import com.megacrit.cardcrawl.relics.PandorasBox;
 import de.robojumper.ststwitch.TwitchConnection;
 import de.robojumper.ststwitch.TwitchMessageListener;
 import de.robojumper.ststwitch.TwitchVoteListener;
@@ -124,6 +125,8 @@ public class SlayTheStreamer
         if (config.getBool("VoteOnBosses")) {
             this.bossHidden = true;
         }
+        // Remove Pandora's Box
+        AbstractDungeon.bossRelicPool.removeIf(s -> s.equals(PandorasBox.ID));
     }
 
     public void setDefaultPrefs() {
@@ -148,16 +151,6 @@ public class SlayTheStreamer
     }
 
     public void receiveStartGame() {
-        // Remove Pandora's Box
-        for (Iterator<String> s = AbstractDungeon.bossRelicPool.iterator(); s.hasNext();)
-        {
-          String derp = (String)s.next();
-          if (derp.equals("Pandora's Box"))
-          {
-            s.remove();
-            break;
-          }
-        }
 
         // Set us to trial mode so we don't get Neow bonuses
         Settings.isTestingNeow = true;

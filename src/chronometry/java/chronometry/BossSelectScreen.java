@@ -256,7 +256,7 @@ public class BossSelectScreen {
         //      You are beautiful to me
         //
     }
-    
+
     public void renderTwitchVotes(final SpriteBatch sb) {
         if (!this.isVoting) {
             chronometry.SlayTheStreamer.log("Twitch not active");
@@ -288,7 +288,10 @@ public class BossSelectScreen {
             }
             FontHelper.renderFontCentered(sb, FontHelper.panelNameFont, TEXT[2] + twitchVoter.getSecondsRemaining() + TEXT[3], Settings.WIDTH / 2.0f, 192.0f * Settings.scale, Color.WHITE.cpy());
         }
-        sb.draw(SlayTheStreamer.startScreenImage, Settings.WIDTH / 2.0F, 0);
+        sb.draw(SlayTheStreamer.startScreenImage,
+                Settings.WIDTH / 2.0F, 0,
+                SlayTheStreamer.startScreenImage.getWidth() * Settings.scale,
+                SlayTheStreamer.startScreenImage.getHeight() * Settings.scale);
     }
 
     // Twitch Voting Stuff goes here            

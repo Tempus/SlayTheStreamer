@@ -29,7 +29,10 @@ public class MainMenuDisplayPatch {
 			    // panelNameFont - tiny, but well balanced
 			    // bannerNameFont  - Big, pretty spiffy looking
 
-			    sb.draw(SlayTheStreamer.startScreenImage, Settings.WIDTH / 2.0F, 0);
+			    sb.draw(SlayTheStreamer.startScreenImage,
+						Settings.WIDTH / 2.0F, 0,
+						SlayTheStreamer.startScreenImage.getWidth() * Settings.scale,
+						SlayTheStreamer.startScreenImage.getHeight() * Settings.scale);
 			}
 		}
 	}
