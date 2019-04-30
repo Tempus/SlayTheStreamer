@@ -54,7 +54,7 @@ import java.util.Optional;
 public class StartGamePatch {
 	public static boolean mayVote = false;
 	public static boolean isVoting = false;
-	public static String[] neowOptions = new String[4];
+	public static String[] neowOptions;
 	public static int option;
 
 	// Reset Variables
@@ -96,10 +96,17 @@ public class StartGamePatch {
 				// Starts voting and populates and formats the options for chat message.
 				StartGamePatch.mayVote = true;
 
-				for (int i = 0; i < 4; i++) {
-					if (i >= 2) {
-						StartGamePatch.neowOptions[i] = ((ArrayList<NeowReward>)ReflectionHacks.getPrivate(self, NeowEvent.class, "rewards")).get(i).optionLabel
-						.replaceFirst(" #g", ", ")
+				ArrayList<NeowReward> neowRewards = (ArrayList<NeowReward>)ReflectionHacks.getPrivate(self, NeowEvent.class, "rewards");
+				StartGamePatch.neowOptions = new String[neowRewards.size()];
+				int i = 0;
+
+				for (NeowReward nr : neowRewards)
+                {
+                    String voteOption = nr.optionLabel;
+
+                    if (voteOption.contains("#r"))
+                    {
+                        voteOption = voteOption.replaceFirst(" #g", ", ")
 						.replace("#g", "")
 						.replace("#r", "")
 						.replace("[ ", "")
@@ -107,14 +114,38 @@ public class StartGamePatch {
 						.replace("]", "") //hi reina
 						.replace("[", "")
 						.replace(".,", ",");
-					} else {
-						StartGamePatch.neowOptions[i] = ((ArrayList<NeowReward>)ReflectionHacks.getPrivate(self, NeowEvent.class, "rewards")).get(i).optionLabel
-						.replace("#g", "")
+                    }
+                    else
+                    {
+                        voteOption = voteOption.replace("#g", "")
 						.replace("#r", "")
 						.replace("[ ", "")
 						.replace(" ]", "");
-					}
-				}
+                    }
+
+                    StartGamePatch.neowOptions[i] = voteOption;
+                    i++;
+                }
+
+//				for (int i = 0; i < 4; i++) {
+//					if (i >= 2) {
+//						StartGamePatch.neowOptions[i] = ((ArrayList<NeowReward>)ReflectionHacks.getPrivate(self, NeowEvent.class, "rewards")).get(i).optionLabel
+//						.replaceFirst(" #g", ", ")
+//						.replace("#g", "")
+//						.replace("#r", "")
+//						.replace("[ ", "")
+//						.replace(" ]", "")
+//						.replace("]", "") //hi reina
+//						.replace("[", "")
+//						.replace(".,", ",");
+//					} else {
+//						StartGamePatch.neowOptions[i] = ((ArrayList<NeowReward>)ReflectionHacks.getPrivate(self, NeowEvent.class, "rewards")).get(i).optionLabel
+//						.replace("#g", "")
+//						.replace("#r", "")
+//						.replace("[ ", "")
+//						.replace(" ]", "");
+//					}
+//				}
 				StartGamePatch.updateVote();
 			}
 		}
