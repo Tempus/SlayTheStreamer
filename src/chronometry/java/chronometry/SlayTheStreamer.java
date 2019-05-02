@@ -1,46 +1,46 @@
 package chronometry;
 
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Properties;
-import java.util.Iterator;
-import java.util.*;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-
-import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.characters.AbstractPlayer.PlayerClass;
-import com.megacrit.cardcrawl.core.EnergyManager;
-import com.megacrit.cardcrawl.core.Settings;
-import com.megacrit.cardcrawl.helpers.FontHelper;
-import com.megacrit.cardcrawl.helpers.ImageMaster;
-
 import basemod.BaseMod;
-import basemod.interfaces.*;
 import basemod.ReflectionHacks;
-
-import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
-import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
-
+import basemod.interfaces.EditStringsSubscriber;
+import basemod.interfaces.PostDungeonInitializeSubscriber;
+import basemod.interfaces.PostInitializeSubscriber;
+import basemod.interfaces.StartGameSubscriber;
 import chronometry.patches.*;
-import chronometry.ConfigPanel;
-import chronometry.BossSelectScreen;
 import chronometry.patches.NoSkipBossRelicPatch;
-import chronometry.MonsterMessageRepeater;
-
+import com.badlogic.gdx.graphics.Texture;
+import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
+import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
+import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.helpers.ImageMaster;
+import com.megacrit.cardcrawl.localization.UIStrings;
+import com.megacrit.cardcrawl.relics.PandorasBox;
+import de.robojumper.ststwitch.TwitchConnection;
+import de.robojumper.ststwitch.TwitchMessageListener;
+import de.robojumper.ststwitch.TwitchVoteListener;
+import de.robojumper.ststwitch.TwitchVoter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import de.robojumper.ststwitch.*;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
     // TODO:
     //   Active monsters could have a listener that lets the user talk on screen
     //crashes if you try to restart the run
 
 @SpireInitializer
-public class SlayTheStreamer implements PostInitializeSubscriber, StartGameSubscriber, PostDungeonInitializeSubscriber {
+public class SlayTheStreamer
+        implements
+        PostInitializeSubscriber,
+        StartGameSubscriber,
+        PostDungeonInitializeSubscriber,
+        EditStringsSubscriber
+
+{
 
     public static final Logger logger = LogManager.getLogger(SlayTheStreamer.class.getName());
 
@@ -125,6 +125,8 @@ public class SlayTheStreamer implements PostInitializeSubscriber, StartGameSubsc
         if (config.getBool("VoteOnBosses")) {
             this.bossHidden = true;
         }
+        // Remove Pandora's Box
+        AbstractDungeon.bossRelicPool.removeIf(s -> s.equals(PandorasBox.ID));
     }
 
     public void setDefaultPrefs() {
@@ -149,16 +151,6 @@ public class SlayTheStreamer implements PostInitializeSubscriber, StartGameSubsc
     }
 
     public void receiveStartGame() {
-        // Remove Pandora's Box
-        for (Iterator<String> s = AbstractDungeon.bossRelicPool.iterator(); s.hasNext();)
-        {
-          String derp = (String)s.next();
-          if (derp.equals("Pandora's Box"))
-          {
-            s.remove();
-            break;
-          }
-        }
 
         // Set us to trial mode so we don't get Neow bonuses
         Settings.isTestingNeow = true;
@@ -166,5 +158,25 @@ public class SlayTheStreamer implements PostInitializeSubscriber, StartGameSubsc
         if (config.getBool("VoteOnBosses")) {
             this.bossHidden = true;
         }
+    }
+
+    @Override
+    public void receiveEditStrings()
+    {
+        loadLocStrings("eng");
+        try
+        {
+            loadLocStrings(Settings.language.toString().toLowerCase());
+        }
+        catch (Exception e)
+        {
+            System.out.println("Slay the Streamer | Language pack not found, default to eng.");
+        }
+
+    }
+
+    private void loadLocStrings(String languageKey)
+    {
+        BaseMod.loadCustomStringsFile(UIStrings.class, "SlayTheStreamer/localizations/"+languageKey+"/uiStrings.json");
     }
 }

@@ -1,32 +1,32 @@
 package chronometry.patches;
 
-import java.util.*;
-import java.lang.reflect.*;
-
+import basemod.ReflectionHacks;
+import chronometry.SlayTheStreamer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
-import com.evacipated.cardcrawl.modthespire.lib.SpireReturn;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
-import com.evacipated.cardcrawl.modthespire.lib.ByRef;
+import com.evacipated.cardcrawl.modthespire.lib.SpireReturn;
+import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.cards.CardGroup;
+import com.megacrit.cardcrawl.cards.curses.AscendersBane;
+import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.events.RoomEventDialog;
+import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.neow.NeowEvent;
 import com.megacrit.cardcrawl.neow.NeowReward;
 import com.megacrit.cardcrawl.neow.NeowRoom;
-import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.cards.CardGroup;
-import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.unlock.UnlockTracker;
-import com.megacrit.cardcrawl.helpers.ImageMaster;
-import com.megacrit.cardcrawl.helpers.FontHelper;
-import com.megacrit.cardcrawl.map.DungeonMap;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
-import de.robojumper.ststwitch.*;
+import com.megacrit.cardcrawl.unlock.UnlockTracker;
+import de.robojumper.ststwitch.TwitchPanel;
+import de.robojumper.ststwitch.TwitchVoteOption;
+import de.robojumper.ststwitch.TwitchVoter;
 
-import com.megacrit.cardcrawl.events.RoomEventDialog;
-
-import chronometry.SlayTheStreamer;
-import basemod.ReflectionHacks;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Optional;
 
 // Attempt 1
 // 10:01:51.513 INFO neow.NeowEvent> 0
@@ -54,7 +54,7 @@ import basemod.ReflectionHacks;
 public class StartGamePatch {
 	public static boolean mayVote = false;
 	public static boolean isVoting = false;
-	public static String[] neowOptions = new String[4];
+	public static String[] neowOptions;
 	public static int option;
 
 	// Reset Variables
@@ -96,22 +96,56 @@ public class StartGamePatch {
 				// Starts voting and populates and formats the options for chat message.
 				StartGamePatch.mayVote = true;
 
-				for (int i = 0; i < 4; i++) {
-					if (i >= 2) {
-						StartGamePatch.neowOptions[i] = ((ArrayList<NeowReward>)ReflectionHacks.getPrivate(self, NeowEvent.class, "rewards")).get(i).optionLabel
-						.replaceFirst(" #g", ", ")
+				ArrayList<NeowReward> neowRewards = (ArrayList<NeowReward>)ReflectionHacks.getPrivate(self, NeowEvent.class, "rewards");
+				StartGamePatch.neowOptions = new String[neowRewards.size()];
+				int i = 0;
+
+				for (NeowReward nr : neowRewards)
+                {
+                    String voteOption = nr.optionLabel;
+
+                    if (voteOption.contains("#r"))
+                    {
+                        voteOption = voteOption.replaceFirst(" #g", ", ")
 						.replace("#g", "")
 						.replace("#r", "")
 						.replace("[ ", "")
-						.replace(" ]", "");
-					} else {
-						StartGamePatch.neowOptions[i] = ((ArrayList<NeowReward>)ReflectionHacks.getPrivate(self, NeowEvent.class, "rewards")).get(i).optionLabel
-						.replace("#g", "")
+						.replace(" ]", "")
+						.replace("]", "") //hi reina
+						.replace("[", "")
+						.replace(".,", ",");
+                    }
+                    else
+                    {
+                        voteOption = voteOption.replace("#g", "")
 						.replace("#r", "")
 						.replace("[ ", "")
 						.replace(" ]", "");
-					}
-				}
+                    }
+
+                    StartGamePatch.neowOptions[i] = voteOption;
+                    i++;
+                }
+
+//				for (int i = 0; i < 4; i++) {
+//					if (i >= 2) {
+//						StartGamePatch.neowOptions[i] = ((ArrayList<NeowReward>)ReflectionHacks.getPrivate(self, NeowEvent.class, "rewards")).get(i).optionLabel
+//						.replaceFirst(" #g", ", ")
+//						.replace("#g", "")
+//						.replace("#r", "")
+//						.replace("[ ", "")
+//						.replace(" ]", "")
+//						.replace("]", "") //hi reina
+//						.replace("[", "")
+//						.replace(".,", ",");
+//					} else {
+//						StartGamePatch.neowOptions[i] = ((ArrayList<NeowReward>)ReflectionHacks.getPrivate(self, NeowEvent.class, "rewards")).get(i).optionLabel
+//						.replace("#g", "")
+//						.replace("#r", "")
+//						.replace("[ ", "")
+//						.replace(" ]", "");
+//					}
+//				}
 				StartGamePatch.updateVote();
 			}
 		}
@@ -150,7 +184,7 @@ public class StartGamePatch {
         StartGamePatch.isVoting = false;
         if (StartGamePatch.getVoter().isPresent()) {
             final TwitchVoter twitchVoter = StartGamePatch.getVoter().get();
-            AbstractDungeon.topPanel.twitch.ifPresent(twitchPanel -> twitchPanel.connection.sendMessage("Voting on Neow's bonus ended... chose " + twitchVoter.getOptions()[option].displayName));
+            AbstractDungeon.topPanel.twitch.ifPresent(twitchPanel -> twitchPanel.connection.sendMessage(CardCrawlGame.languagePack.getUIString("versus:ForPlayer").TEXT[5] + twitchVoter.getOptions()[option].displayName));
         }
 
         // Occurs when the vote runs out of time.
@@ -213,13 +247,15 @@ public class StartGamePatch {
                 }
 
                 float y = (Settings.OPTION_Y - 500.0F * Settings.scale);
-      			y += i * -82.0F;
-      			y -= 4 * -82.0F;
+      			y += i * -82.0F * Settings.scale;
+      			y -= 4 * -82.0F * Settings.scale;
       			// y += 18.5F;
 
                 FontHelper.renderFontRightAligned(sb, FontHelper.panelEndTurnFont, s, 160.0F * Settings.scale, y, Color.WHITE.cpy());
             }
-            FontHelper.renderFontCentered(sb, FontHelper.panelNameFont, "VOTE NOW: " + twitchVoter.getSecondsRemaining() + "s left.", 340.0F, 77.0F + 82.0F * 4 * Settings.scale, Color.WHITE.cpy());
+            FontHelper.renderFontCentered(sb, FontHelper.panelNameFont, CardCrawlGame.languagePack.getUIString("versus:ForPlayer").TEXT[2]
+																			+ twitchVoter.getSecondsRemaining() + CardCrawlGame.languagePack.getUIString("versus:ForPlayer").TEXT[3],
+					340.0F * Settings.scale, 77.0F * Settings.scale + 82.0F * 4 * Settings.scale, Color.WHITE.cpy());
         }
     }
 
@@ -229,7 +265,7 @@ public class StartGamePatch {
 		ReflectionHacks.setPrivate(self, NeowEvent.class, "pickCard", true);
 
 		// Don't forget remove all cards in deck
-		AbstractDungeon.player.masterDeck.group.clear();
+		AbstractDungeon.player.masterDeck.group.removeIf(c -> !c.cardID.equals(AscendersBane.ID));
 
 		CardGroup sealedGroup = new CardGroup(CardGroup.CardGroupType.UNSPECIFIED);
 		
@@ -269,6 +305,10 @@ public class StartGamePatch {
 		}
 
 		// Open the choice dialog
-		AbstractDungeon.gridSelectScreen.open(sealedGroup, SlayTheStreamer.config.getInt("CardPickChoices"), "Choose " + SlayTheStreamer.config.getInt("CardPickChoices") + " cards.", false);
+		AbstractDungeon.gridSelectScreen.open(sealedGroup, SlayTheStreamer.config.getInt("CardPickChoices"),
+				CardCrawlGame.languagePack.getUIString("versus:ForPlayer").TEXT[9] +
+						SlayTheStreamer.config.getInt("CardPickChoices") +
+						CardCrawlGame.languagePack.getUIString("versus:ForPlayer").TEXT[10],
+				false);
 	}
 }

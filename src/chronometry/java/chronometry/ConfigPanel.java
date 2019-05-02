@@ -1,31 +1,8 @@
 package chronometry;
 
-import java.util.ArrayList;
-import java.util.Properties;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.InputAdapter;
-
-import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.characters.AbstractPlayer.PlayerClass;
-import com.megacrit.cardcrawl.core.Settings;
-import com.megacrit.cardcrawl.helpers.FontHelper;
-import com.megacrit.cardcrawl.helpers.ImageMaster;
-
-import basemod.BaseMod;
 import basemod.ModLabel;
-import basemod.ModLabeledToggleButton;
 import basemod.ModPanel;
-import basemod.ModButton;
-import basemod.interfaces.*;
-
-import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
-
-import chronometry.SlayTheStreamer;
+import com.badlogic.gdx.InputProcessor;
 
 
 public class ConfigPanel extends ModPanel {
