@@ -22,7 +22,11 @@ public class MonsterMessageRepeater {
 						if (m.name.split(" ")[0].toLowerCase().equals(username.split(" ")[0].toLowerCase())) {
 							msg = msg.substring(0, Math.min(msg.length(), MonsterMessageRepeater.MsgLength));
 							if (msg.length() == MonsterMessageRepeater.MsgLength) {
-								msg = msg.substring(0, msg.lastIndexOf(" ")) + "...";
+								int lastSpacePos = msg.lastIndexOf(" ");
+								if (lastSpacePos != -1) {
+									msg = msg.substring(0, lastSpacePos);
+								}
+								msg += "...";
 							}
 							AbstractDungeon.effectList.add(new SpeechBubble(m.hb.cX + m.dialogX, m.hb.cY + m.dialogY, 5.0F, msg, false));
 						}
