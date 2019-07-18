@@ -124,7 +124,7 @@ public class MonsterNamesPatch {
 
     @SpirePatch(clz=Twirk.class, method="incommingMessage")
     public static class storeTwitchNames {
-    	@SpireInsertPatch( rloc = 33, localvars={"user"} )
+    	@SpireInsertPatch( rloc = 57, localvars={"user"} )
         public static void Insert(Twirk self, String line, TwitchUser user) {
         	SlayTheStreamer.displayNames.put(user.getUserName(), user.getDisplayName());
         }
