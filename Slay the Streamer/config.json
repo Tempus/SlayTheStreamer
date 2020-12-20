@@ -3,7 +3,7 @@
   "title": "Slay the Streamer",
   "description": "A Twitch Integration mod for Slay the Spire, aimed towards a \u0027Chat vs Streamer\u0027 style gameplay.",
   "visibility": "public",
-  "changeNote": "Finally working again.",
+  "changeNote": "Support for latest spire patch.",
   "tags": [
     "Twitch",
     "Utility",

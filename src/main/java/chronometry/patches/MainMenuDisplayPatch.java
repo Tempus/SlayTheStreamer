@@ -26,7 +26,7 @@ public class MainMenuDisplayPatch {
 			if (AbstractDungeon.topPanel.twitch.isPresent()) {
 				TwitchConfig t = AbstractDungeon.topPanel.twitch.get().connection.getTwitchConfig();
 				String username = (String)ReflectionHacks.getPrivate(t, TwitchConfig.class, "username");
-			    FontHelper.renderFontCentered(sb, FontHelper.bannerFont, CardCrawlGame.languagePack.getUIString("versus:ForPlayer").TEXT[6] + username, Settings.WIDTH / 2.0F, Settings.HEIGHT / 2.0F - 196.0F * Settings.scale, white);
+			    FontHelper.renderFontCentered(sb, FontHelper.bannerNameFont, CardCrawlGame.languagePack.getUIString("versus:ForPlayer").TEXT[6] + username, Settings.WIDTH / 2.0F, Settings.HEIGHT / 2.0F - 196.0F * Settings.scale, white);
 			    // panelNameFont - tiny, but well balanced
 			    // bannerNameFont  - Big, pretty spiffy looking
 

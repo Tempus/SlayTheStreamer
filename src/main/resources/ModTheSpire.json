@@ -4,9 +4,9 @@
   "author_list": ["Chronometrics"],
   "description": "Chat vs Streamer in the ultimate showdown! The streamer begins with a winnable deck, and chat tries to find ways to ruin it by voting and influencing the run throughout the stream. Requires Twitch Integration to work.",
   "dependencies": ["basemod"],
-  "version": "1.4",
+  "version": "1.5",
   "credits": "Code patches and bug fixes by Jedi#3970, ch33zer, GyeRyak, and Alchyr. Special thanks to Baalorlord, Karisa.\nKor translation: Celicath.",
-  "sts_version": "01-23-2019",
-  "mts_version": "3.10.1",
+  "sts_version": "12-18-2020",
+  "mts_version": "3.18.0",
   "update_json": "https://api.github.com/repos/jedi515/SlayTheStreamer/releases/latest"
 }
