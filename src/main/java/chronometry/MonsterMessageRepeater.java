@@ -14,7 +14,7 @@ public class MonsterMessageRepeater {
 			if (AbstractDungeon.getCurrRoom() != null) {
 				if (AbstractDungeon.getCurrRoom().monsters != null) {
 					for (AbstractMonster m : AbstractDungeon.getCurrRoom().monsters.monsters) {
-						if (m.isDying) { return; }
+						if (m.isDying) { continue; }
 						String username = user;
 						if (chronometry.SlayTheStreamer.displayNames.containsKey(username)) {
 							username = chronometry.SlayTheStreamer.displayNames.get(username);
